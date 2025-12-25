@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Phantom Wallet Mockup Editor",
+  "version": "1.0",
+  "description": "A mockup editor for Phantom Wallet UI, allowing visual customization of balances and data.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage"]
+}

@@ -21,7 +21,7 @@ export default function RootLayout({
           id="orchids-browser-logs"
           src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts/orchids-browser-logs.js"
           strategy="afterInteractive"
-          data-orchids-project-id="03c389df-c77a-4814-8bb4-8c19e8e4462e"
+          data-orchids-project-id="272742ef-5b17-419b-8990-7ffb4db1c4f3"
         />
         <ErrorReporter />
         <Script
