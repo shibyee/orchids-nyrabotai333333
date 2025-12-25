@@ -7,6 +7,7 @@ const DEFAULTS = {
     tokUsd: "1.22",
     tokChg: "-0.03",
     badgeCount: "3",
+    addr: "7fXB...Hin7",
     banner: "Meet Phantom Terminal, your new home for desktop trading"
 };
 
@@ -47,6 +48,11 @@ function updateUI() {
     document.getElementById('disp-tokChg').textContent = chgVal;
     document.getElementById('disp-tokChg-sign').textContent = isNegChg ? "-$" : "+$";
     document.getElementById('disp-tokChg-color').style.color = isNegChg ? "var(--down-color)" : "var(--up-color)";
+
+    // Import PK screen address disp
+    if (document.getElementById('import-addr-disp')) {
+        document.getElementById('import-addr-disp').textContent = data.addr;
+    }
 }
 
 function showScreen(id) {
@@ -66,10 +72,12 @@ function switchTab(tabId) {
     
     // Update nav icons
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    const navItem = document.querySelector(`[data-tab="${tabId}"]`);
+    if (navItem) navItem.classList.add('active');
 }
 
 function openEditor() {
+    document.getElementById('edit-addr').value = currentData.addr;
     document.getElementById('edit-bal').value = currentData.bal;
     document.getElementById('edit-delta').value = currentData.delta;
     document.getElementById('edit-pct').value = currentData.pct;
@@ -77,13 +85,13 @@ function openEditor() {
     document.getElementById('edit-tokUsd').value = currentData.tokUsd;
     document.getElementById('edit-tokChg').value = currentData.tokChg;
     document.getElementById('edit-homeName').value = currentData.homeName;
-    document.getElementById('edit-banner').value = currentData.banner;
     showScreen('s-editor');
 }
 
 function saveData() {
     currentData = {
         ...currentData,
+        addr: document.getElementById('edit-addr').value,
         bal: document.getElementById('edit-bal').value,
         delta: document.getElementById('edit-delta').value,
         pct: document.getElementById('edit-pct').value,
@@ -91,7 +99,6 @@ function saveData() {
         tokUsd: document.getElementById('edit-tokUsd').value,
         tokChg: document.getElementById('edit-tokChg').value,
         homeName: document.getElementById('edit-homeName').value,
-        banner: document.getElementById('edit-banner').value,
     };
     
     updateUI();
@@ -131,9 +138,18 @@ window.onload = () => {
     });
 
     // Event Listeners
-    document.getElementById('btn-s1-back')?.addEventListener('click', () => showScreen(null));
-    document.getElementById('item-import-phrase')?.addEventListener('click', () => openEditor());
+    document.getElementById('btn-s1-close')?.addEventListener('click', () => showScreen(null));
+    document.getElementById('btn-s1-close-bottom')?.addEventListener('click', () => showScreen(null));
     document.getElementById('badge-account')?.addEventListener('click', () => showScreen('s1'));
+    
+    document.getElementById('item-import-phrase')?.addEventListener('click', () => openEditor());
+    document.getElementById('item-import-pk')?.addEventListener('click', () => showScreen('s-import-pk'));
+    document.getElementById('btn-import-pk-action')?.addEventListener('click', () => {
+        // Just go back for mock
+        showScreen(null);
+        switchTab('tab-home');
+    });
+
     document.getElementById('banner-close')?.addEventListener('click', (e) => {
         document.getElementById('banner').style.display = 'none';
     });
