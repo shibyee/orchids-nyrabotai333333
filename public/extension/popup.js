@@ -51,7 +51,22 @@ function updateUI() {
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    if (id) {
+        document.getElementById(id).classList.add('active');
+    }
+}
+
+function switchTab(tabId) {
+    // Hide screens if any are active
+    showScreen(null);
+    
+    // Update tabs
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    
+    // Update nav icons
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
 }
 
 function openEditor() {
@@ -80,7 +95,8 @@ function saveData() {
     };
     
     updateUI();
-    showScreen('s3');
+    showScreen(null); // Back to tabs
+    switchTab('tab-home');
     
     if (typeof chrome !== 'undefined' && chrome.storage) {
         chrome.storage.local.set({ mockData: currentData });
@@ -91,18 +107,12 @@ function saveData() {
 
 // Init
 window.onload = () => {
-    // Check Chrome Storage first
+    // Load data
     if (typeof chrome !== 'undefined' && chrome.storage) {
         chrome.storage.local.get(['mockData'], (res) => {
             if (res.mockData) {
                 currentData = { ...DEFAULTS, ...res.mockData };
                 updateUI();
-            } else {
-                const saved = localStorage.getItem('phantom_mock_data');
-                if (saved) {
-                    currentData = { ...DEFAULTS, ...JSON.parse(saved) };
-                    updateUI();
-                }
             }
         });
     } else {
@@ -112,12 +122,20 @@ window.onload = () => {
             updateUI();
         }
     }
+
+    // Tab Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            switchTab(item.getAttribute('data-tab'));
+        });
+    });
+
     // Event Listeners
-    document.getElementById('btn-s1-back')?.addEventListener('click', () => showScreen('s3'));
+    document.getElementById('btn-s1-back')?.addEventListener('click', () => showScreen(null));
     document.getElementById('item-import-phrase')?.addEventListener('click', () => openEditor());
     document.getElementById('badge-account')?.addEventListener('click', () => showScreen('s1'));
     document.getElementById('banner-close')?.addEventListener('click', (e) => {
-        e.currentTarget.parentElement.style.display = 'none';
+        document.getElementById('banner').style.display = 'none';
     });
     document.getElementById('btn-editor-back')?.addEventListener('click', () => showScreen('s1'));
     document.getElementById('btn-save')?.addEventListener('click', () => saveData());
